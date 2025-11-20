@@ -30,7 +30,7 @@ func ThresholdOfGrayImage(img *image.Gray, percentThreshold float32) error {
 		return fmt.Errorf("Incorect value for percentThreshold (0.0 - 1.0)")
 	}
 	minVal, maxVal := uint8(math.MaxUint8), uint8(0)
-	fmt.Println(minVal, maxVal)
+	// fmt.Println(minVal, maxVal)
 	bounds := img.Bounds()
 	sizeX, sizeY := bounds.Max.X, bounds.Max.Y
 
@@ -181,6 +181,8 @@ func KeepLargestArea(img *image.Gray, minArea int) (lightdetection.DetectedArea,
 			i := idx(x, y)
 			if label[i] != bestID {
 				img.SetGray(x, y, color.Gray{Y: 0})
+			} else {
+				img.SetGray(x, y, color.Gray{Y: 255})
 			}
 		}
 	}

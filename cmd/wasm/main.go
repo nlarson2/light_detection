@@ -36,10 +36,12 @@ func jsDetectFlashlight(this js.Value, args []js.Value) interface{} {
 
 		gray := processing.ImageToGray(img)
 		processing.ThresholdOfGrayImage(gray, float32(pthresh))
-		_, detected := processing.KeepLargestArea(gray, 15)
-		err = processing.EncodeJpegToFile(gray, "./images/test")
+		minArea := 0.0005 * float64(gray.Bounds().Max.X*gray.Bounds().Max.Y)
+		_, detected := processing.KeepLargestArea(gray, int(minArea))
+		// err = processing.EncodeJpegToFile(gray, "./images/test")
 		outVals = append(outVals, detected)
 		// outVals = append(outVals, processing.CalulateLightValue(gray))
+		// fmt.Println("Detectected: ", detected, "   Box: ", box, "  Size: ", gray.Bounds(), "  MinArea: ", minArea)
 	}
 
 	res := map[string]any{

@@ -40,13 +40,14 @@ func main() {
 			log.Fatal("Failed to encode jpeg file: ", err)
 		}
 		_ = processing.ThresholdOfGrayImage(gray, 0.995)
-		_, detected := processing.KeepLargestArea(gray, 10)
+		minArea := 0.0005 * float64(gray.Bounds().Max.X*gray.Bounds().Max.Y)
+		box, detected := processing.KeepLargestArea(gray, int(minArea))
 		outputFile, _ := os.Create(write_path + f)
 		defer outputFile.Close()
 
 		_ = jpeg.Encode(outputFile, gray, nil)
 
-		fmt.Println("File: ", f, "   Light Detected: ", processing.CalulateLightValue(gray), "  Detected: ", detected)
+		fmt.Println("File: ", f, "   Light Detected: ", processing.CalulateLightValue(gray), "  Detected: ", detected, "  Box: ", box, " Size: ", gray.Bounds(), " MINAREA: ", minArea)
 
 	}
 }
