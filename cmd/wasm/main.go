@@ -43,7 +43,7 @@ func jsDetectFlashlight(this js.Value, args []js.Value) interface{} {
 	}
 
 	res := map[string]any{
-		"light_value": outVals,
+		"light_detected": outVals,
 	}
 	b, _ := json.Marshal(res)
 	var out map[string]any
