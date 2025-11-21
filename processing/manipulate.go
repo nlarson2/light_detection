@@ -26,10 +26,12 @@ func ImageToGray(src image.Image) *image.Gray {
 }
 
 func ThresholdOfGrayImage(img *image.Gray, percentThreshold float32) error {
+	var minLightValue uint8 = 230
 	if percentThreshold > 1 || percentThreshold < 0 {
 		return fmt.Errorf("Incorect value for percentThreshold (0.0 - 1.0)")
 	}
 	minVal, maxVal := uint8(math.MaxUint8), uint8(0)
+	// minVal, maxVal = uint8(0), uint8(math.MaxUint8)
 	// fmt.Println(minVal, maxVal)
 	bounds := img.Bounds()
 	sizeX, sizeY := bounds.Max.X, bounds.Max.Y
@@ -56,7 +58,7 @@ func ThresholdOfGrayImage(img *image.Gray, percentThreshold float32) error {
 	for x := 0; x < sizeX; x++ {
 		for y := 0; y < sizeY; y++ {
 			value := img.GrayAt(x, y).Y
-			if value < thresholdValue {
+			if value < thresholdValue || value < minLightValue {
 				img.Set(x, y, color.Black)
 			} else {
 				img.Set(x, y, color.White)
@@ -67,7 +69,7 @@ func ThresholdOfGrayImage(img *image.Gray, percentThreshold float32) error {
 	return nil
 }
 
-func KeepLargestArea(img *image.Gray, minArea int) (lightdetection.DetectedArea, bool) {
+func KeepLargestArea(img *image.Gray, minArea int, maxArea int) (lightdetection.DetectedArea, bool) {
 	b := img.Bounds()
 	w, h := b.Dx(), b.Dy()
 	if w <= 0 || h <= 0 {
@@ -166,7 +168,7 @@ func KeepLargestArea(img *image.Gray, minArea int) (lightdetection.DetectedArea,
 		if id == 0 {
 			continue
 		}
-		if c.area >= minArea && c.area > bestArea {
+		if c.area >= minArea && c.area <= maxArea && c.area > bestArea {
 			bestArea = c.area
 			bestID = id
 		}

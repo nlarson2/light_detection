@@ -41,7 +41,8 @@ func main() {
 		}
 		_ = processing.ThresholdOfGrayImage(gray, 0.995)
 		minArea := 0.0005 * float64(gray.Bounds().Max.X*gray.Bounds().Max.Y)
-		box, detected := processing.KeepLargestArea(gray, int(minArea))
+		maxArea := 0.005 * float64(gray.Bounds().Max.X*gray.Bounds().Max.Y)
+		box, detected := processing.KeepLargestArea(gray, int(minArea), int(maxArea))
 		outputFile, _ := os.Create(write_path + f)
 		defer outputFile.Close()
 
